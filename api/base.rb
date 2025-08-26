@@ -1,5 +1,5 @@
 require 'grape'
-require_relative '../tools/integer'
+require_relative '../tools/string'
 
 module API
   class Base < Grape::API
@@ -8,13 +8,14 @@ module API
 
     resource :ping do
       get do
-        { ping: 'pong' }
+        { answer: 'pong' }
       end
     end
 
-    resource :dice do
+    resource :roll do
       get do
-        { result: rand(1..params[:size] || 6).to_roman }
+        dice_size = params[:size] ? params[:size]&.to_i : 6
+        { result: rand(1..dice_size)&.to_roman }
       end
     end
   end
