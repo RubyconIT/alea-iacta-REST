@@ -23,13 +23,21 @@ RSpec.describe API::Base do
 
     it "can't return results higher than param size passed or lower than 1" do
       results = []
-      max_size = 10.freeze
+      max_size = 6
       100.times do
         get '/api/roll', size: max_size
         results << JSON.parse(last_response.body)["result"].roman_to_int
       end
-      expect(results.max).to <= max_size
+      expect(results.max).to be <= max_size
       expect(results.min).to be >= 1
+    end
+
+    it 'returns a pseudo random result and converts it into roman' do
+      srand(rand)
+      rand_value = rand(1..6)
+      srand(rand)
+      get '/api/roll'
+      expect(JSON.parse(last_response.body)).to eq({ 'result' => rand_value.to_roman })
     end
   end
 end
